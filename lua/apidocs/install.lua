@@ -1,4 +1,8 @@
 local common = require("apidocs.common")
+local metadata = require("apidocs.metadata")
+
+-- docs.json entries by slug, filled by fetch_slugs_and_mtimes_and_then
+local catalogue = {}
 
 local function fetch_slugs_and_mtimes_and_then(cont)
   vim.system({"curl", "-L", "https://devdocs.io/docs.json"}, {text=true}, vim.schedule_wrap(function(res)
@@ -6,6 +10,7 @@ local function fetch_slugs_and_mtimes_and_then(cont)
     local slugs_to_mtimes = {}
     for _, doc in ipairs(data) do
       slugs_to_mtimes[doc['slug']] = doc['mtime']
+      catalogue[doc['slug']] = doc
     end
     cont(slugs_to_mtimes)
   end))
@@ -544,6 +549,8 @@ local function apidoc_install(choice, slugs_to_mtimes, cont)
 
       local elapsed = (vim.loop.hrtime() - start_install) / 1e9
 
+      metadata.mark_installed(choice, catalogue[choice] or { mtime = mtime })
+
       vim.notify("Finished fetching documentation for " .. choice .. " in " .. elapsed .. "s. All parsing: " .. all_parsing
       .. "s. All reading IDs: " .. all_reading_ids .. "s. All writing: " .. elapsed_writing .. "s. All elinks: " .. elapsed_elinks .. "s. All post-process: " .. elapsed_pp .. "s.")
 
@@ -562,7 +569,11 @@ local function apidocs_install()
     fetch_slugs_and_mtimes_and_then(function (slugs_to_mtimes)
       local keys = vim.tbl_keys(slugs_to_mtimes)
       table.sort(keys)
-      vim.ui.select(keys, {prompt="Pick a documentation to install"}, function(choice)
+      local manifest = metadata.refresh(catalogue)
+      vim.ui.select(keys, {
+        prompt="Pick a documentation to install",
+        format_item = function(slug) return metadata.label(catalogue[slug], manifest[slug]) end,
+      }, function(choice)
         if choice == nil then
           return
         end
