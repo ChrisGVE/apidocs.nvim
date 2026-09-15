@@ -1,6 +1,7 @@
 local common = require("apidocs.common")
 local install_queue = require("apidocs.install_queue")
 local metadata = require("apidocs.metadata")
+local sections = require("apidocs.sections")
 
 -- docs.json entries by slug, filled by fetch_slugs_and_mtimes_and_then
 local catalogue = {}
@@ -646,6 +647,9 @@ local function apidoc_install(choice, slugs_to_mtimes, cont, on_fail)
           end
         end
       end
+
+      -- section files repeat their page's text: keep them out of searches
+      sections.write(target_path, vim.tbl_keys(out_path_to_orig_containing_path))
 
       local elapsed_pp = (vim.loop.hrtime() - start_pp) / 1e9
 
