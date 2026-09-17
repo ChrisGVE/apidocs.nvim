@@ -87,7 +87,7 @@ local function apidocs_search(opts)
   local function entry_maker(entry)
     local r = default_entry_maker(entry)
     r.display = function(entry)
-      local display = common.filename_to_display(entry.filename:sub(#folder+1))
+      local display = require("apidocs.folders").display_path(common.filename_to_display(entry.filename:sub(#folder+1)))
       local source_length = display:find("/")
       local hl_group = {
         { {0, source_length}, "TelescopeResultsTitle"},
