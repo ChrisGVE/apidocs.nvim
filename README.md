@@ -75,6 +75,15 @@ The built-in source, and the only one with a catalogue: one request lists every 
 with the release and the build time of each. That is also what makes an update check cheap --
 see `ApidocsUpdate`.
 
+### pkg.go.dev
+
+A Go package is named by its address rather than found by a search: pkg.go.dev's
+`robots.txt` disallows its search, so there is nothing to type a name into. Paste a
+pkg.go.dev URL and the row shows the package, its version and how many pages the
+install will fetch -- the package the address names plus every package under it,
+internal ones excepted. The standard library is reached the same way. A docset's
+language is Go without being asked.
+
 ## Dependencies
 
 This plugin requires:
