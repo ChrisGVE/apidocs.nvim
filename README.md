@@ -75,6 +75,17 @@ The built-in source, and the only one with a catalogue: one request lists every 
 with the release and the build time of each. That is also what makes an update check cheap --
 see `ApidocsUpdate`.
 
+### docs.rs
+
+`docs.rs` documents a Rust crate. docs.rs builds every crates.io release and ships
+each build as one zip, so an install is a single request (it needs the `unzip`
+program). A docset installs as `<crate>~<version>~~docs.rs`, and its language is Rust
+without being asked.
+
+It answers the install picker's search: type three letters of a crate name and its
+crates.io matches join the list, each already carrying the version that will be
+installed.
+
 ## Dependencies
 
 This plugin requires:
