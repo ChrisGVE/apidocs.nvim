@@ -64,7 +64,8 @@ end)
 
 test("origins are listed in a stable order", function()
   sources.register(example)
-  eq(sources.origins(), { "devdocs.io", "example.org" })
+  -- The shipped adapters plus the one registered here, sorted.
+  eq(sources.origins(), { "devdocs.io", "example.org", "sphinx" })
 end)
 
 test("workers defaults to 4 async jobs", function()
